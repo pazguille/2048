@@ -1,17 +1,5 @@
 function KeyboardInputManager() {
   this.events = {};
-
-  if (window.navigator.msPointerEnabled) {
-    //Internet Explorer 10 style
-    this.eventTouchstart    = "MSPointerDown";
-    this.eventTouchmove     = "MSPointerMove";
-    this.eventTouchend      = "MSPointerUp";
-  } else {
-    this.eventTouchstart    = "touchstart";
-    this.eventTouchmove     = "touchmove";
-    this.eventTouchend      = "touchend";
-  }
-
   this.listen();
 }
 
@@ -72,51 +60,30 @@ KeyboardInputManager.prototype.listen = function () {
   keepPlaying.addEventListener("click", this.keepPlaying.bind(this));
   keepPlaying.addEventListener("touchend", this.keepPlaying.bind(this));
 
-  // Listen to swipe events
-  var touchStartClientX, touchStartClientY;
-  var gameContainer = document.getElementsByClassName("game-container")[0];
+  // GestureKit
+  // 0: up, 1: right, 2:down, 3: left
+  gesturekit
+    .on('GK_UP', function (eve) {
+      self.emit("move", 0);
+    })
+    .on('GK_RIGHT', function (eve) {
+      self.emit("move", 1);
+    })
+    .on('GK_DOWN', function (eve) {
+      self.emit("move", 2);
+    })
+    .on('GK_LEFT', function (eve) {
+      self.emit("move", 3);
+    })
+    .on('GK_RESTART', function (eve) {
+      self.emit("restart");
+    });
 
-  gameContainer.addEventListener(this.eventTouchstart, function (event) {
-    if (( !window.navigator.msPointerEnabled && event.touches.length > 1) || event.targetTouches > 1) return;
-    
-    if(window.navigator.msPointerEnabled){
-        touchStartClientX = event.pageX;
-        touchStartClientY = event.pageY;
-    } else {
-        touchStartClientX = event.touches[0].clientX;
-        touchStartClientY = event.touches[0].clientY;
-    }
-    
-    event.preventDefault();
+  gesturekit.init({
+    'uid': 'dc6a09b0-250b-4823-b208-264ad4c0a50b',
+    'sensor': document.querySelector('.game-container')
   });
 
-  gameContainer.addEventListener(this.eventTouchmove, function (event) {
-    event.preventDefault();
-  });
-
-  gameContainer.addEventListener(this.eventTouchend, function (event) {
-    if (( !window.navigator.msPointerEnabled && event.touches.length > 0) || event.targetTouches > 0) return;
-
-    var touchEndClientX, touchEndClientY;
-    if(window.navigator.msPointerEnabled){
-        touchEndClientX = event.pageX;
-        touchEndClientY = event.pageY;
-    } else {
-        touchEndClientX = event.changedTouches[0].clientX;
-        touchEndClientY = event.changedTouches[0].clientY;
-    }
-
-    var dx = touchEndClientX - touchStartClientX;
-    var absDx = Math.abs(dx);
-
-    var dy = touchEndClientY - touchStartClientY;
-    var absDy = Math.abs(dy);
-
-    if (Math.max(absDx, absDy) > 10) {
-      // (right : left) : (down : up)
-      self.emit("move", absDx > absDy ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0));
-    }
-  });
 };
 
 KeyboardInputManager.prototype.restart = function (event) {
