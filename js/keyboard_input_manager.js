@@ -80,7 +80,7 @@ KeyboardInputManager.prototype.listen = function () {
     });
 
   gesturekit.init({
-    'uid': 'dc6a09b0-250b-4823-b208-264ad4c0a50b',
+    'uiid': 'dc6a09b0-250b-4823-b208-264ad4c0a50b',
     'sensor': document.querySelector('.game-container')
   });
 
