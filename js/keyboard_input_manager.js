@@ -63,19 +63,19 @@ KeyboardInputManager.prototype.listen = function () {
   // GestureKit
   // 0: up, 1: right, 2:down, 3: left
   gesturekit
-    .on('GK_UP', function (eve) {
+    .on('UP', function (eve) {
       self.emit("move", 0);
     })
-    .on('GK_RIGHT', function (eve) {
+    .on('RIGHT', function (eve) {
       self.emit("move", 1);
     })
-    .on('GK_DOWN', function (eve) {
+    .on('DOWN', function (eve) {
       self.emit("move", 2);
     })
-    .on('GK_LEFT', function (eve) {
+    .on('LEFT', function (eve) {
       self.emit("move", 3);
     })
-    .on('GK_RESTART', function (eve) {
+    .on('RESTART', function (eve) {
       self.emit("restart");
     });
 
